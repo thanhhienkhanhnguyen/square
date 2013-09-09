@@ -21,6 +21,8 @@
     CGPoint startPoint;
     CGPoint endPoint;
     BOOL update;
+    BOOL isRotate;
+    CGPoint lastPoint;
     
 }
 

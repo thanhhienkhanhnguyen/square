@@ -23,6 +23,7 @@ typedef struct Square {
 }
 @property (nonatomic, assign) __squre case1, case2,case3,case4;
 @property (nonatomic, retain) id<squareDelegate>delegate;
+@property (nonatomic, retain) UIColor *color;
 
 ;
 -(void)squareMoveLeft;
@@ -31,5 +32,6 @@ typedef struct Square {
 -(void)squareMoveDown;
 -(void)setButtonState:(BOOL)state;
 -(void)squareRound;
-
+-(void)flipVertical;
+-(void)squareMoveRight:(NSInteger) offset;
 @end

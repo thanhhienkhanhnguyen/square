@@ -14,7 +14,7 @@
 #import "squareFoure.h"
 #import "squarefive.h"
 #import "squareSix.h"
-
+#import "squareSeven.h"
 #define WIDTH 20
 static rootViewController * instance;
 
@@ -131,16 +131,38 @@ static rootViewController * instance;
         for (int j = 0; j < 4; j++) {
             button = (UIButton *)[self.view viewWithTag:i + j*3 + 500];
             button.hidden = YES;
+            
         }
     }
-  button = (UIButton *)[self.view viewWithTag:square.case1.x + square.case1.y * 3 +500];
-    button.hidden = NO;
-    button = (UIButton *)[self.view viewWithTag:square.case2.x + square.case2.y * 3 +500];
-    button.hidden = NO;
-    button = (UIButton *)[self.view viewWithTag:square.case3.x + square.case3.y * 3 +500];
-    button.hidden = NO;
-    button = (UIButton *)[self.view viewWithTag:square.case4.x + square.case4.y * 3 +500];
-    button.hidden = NO;
+    if ([square isKindOfClass:[squareSeven class]]) {
+        button = (UIButton *)[self.view viewWithTag:square.case1.x - 5 + square.case1.y * 3 +500];
+        button.backgroundColor = self.squreCase2.color;
+        button.hidden = NO;
+        button = (UIButton *)[self.view viewWithTag:square.case2.x -5 + square.case2.y * 3 +500];
+        button.backgroundColor = self.squreCase2.color;
+        button.hidden = NO;
+        button = (UIButton *)[self.view viewWithTag:square.case3.x -5 + square.case3.y * 3 +500];
+        button.backgroundColor = self.squreCase2.color;
+        button.hidden = NO;
+        button = (UIButton *)[self.view viewWithTag:square.case4.x -5 + square.case4.y * 3 +500];
+        button.backgroundColor = self.squreCase2.color;
+        button.hidden = NO;
+    }else {
+        button = (UIButton *)[self.view viewWithTag:square.case1.x + square.case1.y * 3 +500];
+        button.backgroundColor = self.squreCase2.color;
+        button.hidden = NO;
+        button = (UIButton *)[self.view viewWithTag:square.case2.x + square.case2.y * 3 +500];
+        button.backgroundColor = self.squreCase2.color;
+        button.hidden = NO;
+        button = (UIButton *)[self.view viewWithTag:square.case3.x + square.case3.y * 3 +500];
+        button.backgroundColor = self.squreCase2.color;
+        button.hidden = NO;
+        button = (UIButton *)[self.view viewWithTag:square.case4.x + square.case4.y * 3 +500];
+        button.backgroundColor = self.squreCase2.color;
+        button.hidden = NO;
+        
+    }
+    
 }
 
 -(void)createCase
@@ -150,24 +172,34 @@ static rootViewController * instance;
         seconds = [self getCurrentTime];
         srand(seconds);
     }
-    switch (rand()%6) {
+    switch (rand()%7) {
         case 0:
             self.squreCase2 = [[squareOne alloc] init];
+            squreCase2.color = [UIColor redColor];
             break;
         case 1:
             self.squreCase2 = [[squareTwo alloc] init];
+            squreCase2.color = [UIColor yellowColor];
             break;
         case 2:
             self.squreCase2 = [[squareThree alloc] init];
+            squreCase2.color = [UIColor blueColor];
             break;
         case 3:
             self.squreCase2 = [[squareFoure alloc] init];
+            squreCase2.color = [UIColor grayColor];
             break;
         case 4:
             self.squreCase2 = [[squarefive alloc] init];
+            squreCase2.color = [UIColor darkGrayColor];
             break;
         case 5:
             self.squreCase2 = [[squareSix alloc] init];
+            squreCase2.color = [UIColor purpleColor];
+            break;
+        case 6:
+            self.squreCase2 = [[squareSeven alloc] init];
+            squreCase2.color = [UIColor greenColor];
             break;
         default:
             break;
@@ -183,15 +215,14 @@ static rootViewController * instance;
     @synchronized(squreCase) {
         update = NO;
         [squreCase squareMoveDown];
-        [squreCase squareMoveDown];
-        [squreCase squareMoveDown];
     }
 }
 -(void)fun
 {
     while (1) {
         
-        [NSThread sleepForTimeInterval:1.0 - (score/200) * 0.05];
+//        NSLog(@"time to sleep: %f",1.0 - (score/200) * 0.05);
+        [NSThread sleepForTimeInterval:(1.0 - (score/200) * 0.05)];
         [self performSelectorOnMainThread:@selector(doMainSquareMoveDown) withObject:nil waitUntilDone:YES];
     }
 
@@ -203,7 +234,22 @@ static rootViewController * instance;
         [squreCase squareMoveDown];
     }
 }
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    @synchronized(squreCase) {
+        UITouch * touch = [touches anyObject];
+        CGPoint newPoint = [touch locationInView:self.view];
+        NSLog(@"offset0 == %f",newPoint.x - lastPoint.x);
+        NSInteger offset = (newPoint.x - lastPoint.x)/20;
+//        NSLog(@"offset == %d",offset);
+        
+        if (offset >= 1 || (offset *(-1)) >= 1) {
+            [squreCase squareMoveRight:offset];
+            lastPoint = newPoint;
+        }
+    }
 
+}
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     @synchronized(squreCase) {
@@ -211,11 +257,11 @@ static rootViewController * instance;
         endPoint = [touch locationInView:self.view];
         if (endPoint.x - startPoint.x >= 20 && endPoint.y - startPoint.y < 80) {
             for (int i = 1; i < (endPoint.x - startPoint.x) / 20; i++) {
-                [squreCase squareMoveRight];
+//                [squreCase squareMoveRight];
             }
         } else if (endPoint.x - startPoint.x <= -20) {
             for (int i = 1; i < (startPoint.x - endPoint.x) / 20; i++) {
-                [squreCase squareMoveLeft];
+//                [squreCase squareMoveLeft];
             }
         } else if (endPoint.y - startPoint.y > 60) {
             for (int i = 0; i < (endPoint.y - startPoint.y) / 40; i++) {
@@ -235,12 +281,15 @@ static rootViewController * instance;
 //    if (ifisGameRun == NO)
 //        return;
     UITouch * touch = [touches anyObject];
-    if ([touch tapCount]%2 == 0 && [touch tapCount] > 1
-        && (endPoint.x - startPoint.x) < 6
+    if ( /*[touch tapCount]%2 == 0 && [touch tapCount] > 1
+        &&*/ (endPoint.x - startPoint.x) < 6
         && (startPoint.x - endPoint.x) < 6) {
-        [squreCase squareRound];
+        isRotate = YES;
+//        [squreCase squareRound];
     }
     startPoint = [touch locationInView:self.view];
+    lastPoint = [touch locationInView:self.view];
+
 }-(void)initTimer
 {
     [NSThread detachNewThreadSelector:@selector(fun) toTarget:self withObject:nil];
@@ -258,8 +307,18 @@ static rootViewController * instance;
     [self.view addSubview:levelLabel];
     [scoreLabel release];
     [levelLabel release];
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn setFrame:CGRectMake(240, 340, 80, 40)];
+    [btn setTitle:@"Click" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(flipVertical) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
 }
-
+-(void)flipVertical
+{
+    [squreCase squareMoveRight];
+//    [self.squreCase flipVertical];
+}
 -(void)beginButtonClick
 {
 
@@ -301,13 +360,18 @@ static rootViewController * instance;
     [self launchView];
     [self initTimer];
 
-    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGesture:)];
+    [self.view addGestureRecognizer:tap];
+    [tap release];
     
 //    [self drawLine];
 
 
 }
-
+-(void)tapGesture:(UITapGestureRecognizer *)gesture
+{
+    [squreCase squareRound];
+}
 #pragma mark --
 #pragma delegateMethod
 
@@ -354,9 +418,9 @@ static rootViewController * instance;
     for (int y = 19; y >= 0; y--) {
         flage = NO;
         for (int x = 0; x < 10; x++) {
-            if (![self getButtonShowState:x :y]) {
+            if (![self getButtonShowState:x :y]) {// neu co 1 button nao do hidden == YES -> ko reset
                 flage = YES;
-                printf("x: %d, y: %d\n", x, y);
+//                printf("x: %d, y: %d\n", x, y);
                 break;
             }
             
@@ -398,6 +462,7 @@ static rootViewController * instance;
     if ([self checkGameState]) {
         beginButton.hidden = NO;
         beginButton.enabled = YES;
+//        [self.squreCase setButtonState:YES];
         return;
     }
 

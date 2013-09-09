@@ -13,6 +13,7 @@
 @implementation baseSquareCase
 @synthesize case1, case2,case3,case4;
 @synthesize delegate;
+@synthesize color = _color;
 
 -(void)squareRound
 {
@@ -43,7 +44,9 @@
     UIButton * button = (UIButton *)[rvc.view viewWithTag:tag];
     if (button) {
         button.hidden = states;
+        button.backgroundColor = self.color;
     }
+    
 }
 -(void)setButtonState:(BOOL)states
 {
@@ -72,6 +75,29 @@
     
     return;
 }
+-(void)squareMoveRight:(NSInteger) offset
+{
+    [self setButtonState:YES];
+    if ([self beyondBounds:case1.x+offset :case1.y]
+        || [self beyondBounds:case2.x+offset :case2.y]
+        || [self beyondBounds:case3.x+offset :case3.y]
+        || [self beyondBounds:case4.x+offset :case4.y]) {
+        [self setButtonState:NO];
+        return;
+    }
+//    ++case1.x;
+//    ++case2.x;
+//    ++case3.x;
+//    ++case4.x;
+    case1.x += offset;
+    case2.x += offset;
+    case3.x += offset;
+    case4.x += offset;
+    [self setButtonState:NO];
+    
+    return;
+}
+
 
 -(void)squareMoveLeft
 {
@@ -112,5 +138,9 @@
         [self setButtonState:NO];
 
         return;
+}
+-(void)flipVertical
+{
+    
 }
 @end
